@@ -35,6 +35,12 @@ body{background:linear-gradient(180deg,#071032 0%, #071022 60%);color:#e6eef8;fo
 .btn{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:white;padding:8px 12px;border-radius:8px;border:0;cursor:pointer}
 .btn:disabled{opacity:0.5}
 
+.arrow-btn{background:transparent;border:1px solid rgba(255,255,255,0.04);color:inherit;padding:8px 12px;border-radius:8px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;font-size:18px}
+.arrow-btn:hover{background:rgba(255,255,255,0.02)}
+.arrow-btn:disabled{opacity:0.35;cursor:not-allowed}
+.arrow-btn .left{transform:translateX(-1px)}
+.arrow-btn .right{transform:translateX(1px)}
+
 .question{padding:12px;border-radius:8px;border:1px solid rgba(255,255,255,0.03);background:linear-gradient(180deg, rgba(255,255,255,0.01), transparent)}
 
 @media (max-width:720px){

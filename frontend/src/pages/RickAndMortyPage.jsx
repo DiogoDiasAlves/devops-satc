@@ -58,10 +58,16 @@ export default function RickAndMortyPage(){
             ))}
           </div>
 
-          <div style={{ marginTop: 16 }}>
-            <button disabled={!data.info.prev} onClick={()=>setPage(p=>Math.max(1,p-1))}>Prev</button>
-            <span style={{ margin: '0 8px' }}>Page {page} / {data.info.pages}</span>
-            <button disabled={!data.info.next} onClick={()=>setPage(p=>p+1)}>Next</button>
+          <div style={{ marginTop: 16, display:'flex', gap:8, justifyContent:'center', alignItems:'center' }}>
+            <button className="arrow-btn" disabled={!data.info.prev} onClick={()=>setPage(p=>Math.max(1,p-1))} aria-label="Previous">
+              <span className="left">‹</span>
+            </button>
+
+            <div className="muted">Page {page} / {data.info.pages}</div>
+
+            <button className="arrow-btn" disabled={!data.info.next} onClick={()=>setPage(p=>p+1)} aria-label="Next">
+              <span className="right">›</span>
+            </button>
           </div>
         </div>
       )}
