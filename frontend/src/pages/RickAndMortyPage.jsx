@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import PropTypes from 'prop-types'
 import { fetchCharacters, searchCharacters } from '../services/rickAndMortyService'
 
 function CharacterCard({ c }) {
@@ -9,6 +10,16 @@ function CharacterCard({ c }) {
       <div>{c.species} — {c.status}</div>
     </div>
   )
+}
+
+CharacterCard.propTypes = {
+  c: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    name: PropTypes.string.isRequired,
+    image: PropTypes.string.isRequired,
+    species: PropTypes.string.isRequired,
+    status: PropTypes.string.isRequired
+  }).isRequired
 }
 
 export default function RickAndMortyPage(){
