@@ -16,6 +16,38 @@ async function requestNewToken(){
   throw new Error('Não foi possível obter token do OpenTDB')
 }
 
+function buildParams(amount, category, difficulty, token) {
+  const params = { amount }
+  if(category) params.category = category
+  if(difficulty) params.difficulty = difficulty
+  if(token) params.token = token
+  return params
+}
+
+function handleResponseCode(code) {
+  if(code === 0) return { success: true }
+  if(code === 3 || code === 4) return { tokenError: true }
+  if(code === 1) return { noResults: true }
+  throw new Error('OpenTDB error code ' + code)
+}
+
+async function handleRetryError(err, attempts) {
+  const status = err?.response?.status
+  
+  if(status === 429) {
+    const wait = 500 * attempts
+    await new Promise(r => setTimeout(r, wait))
+    return true
+  }
+  
+  if(attempts < 3) {
+    await new Promise(r => setTimeout(r, 200 * attempts))
+    return true
+  }
+  
+  return false
+}
+
 export async function fetchTrivia(amount = 10, category = '', difficulty = '') {
   let attempts = 0
   let lastErr
@@ -28,45 +60,21 @@ export async function fetchTrivia(amount = 10, category = '', difficulty = '') {
         token = await requestNewToken()
       }
 
-      const params = { amount }
-      if(category) params.category = category
-      if(difficulty) params.difficulty = difficulty
-      if(token) params.token = token
-
+      const params = buildParams(amount, category, difficulty, token)
       const res = await axios.get(`${BASE}/api.php`, { params, timeout: 10000 })
-
-      // response_code meanings: 0=Success,1=No Results,2=Invalid,3=Token Not Found,4=Token Empty
       const code = res?.data?.response_code
-      if(code === 0){
-        return res.data
-      }
-
-      if(code === 3 || code === 4){
-        // token invalid or exhausted — obtain a new one and retry
+      
+      const result = handleResponseCode(code)
+      if(result.success) return res.data
+      if(result.tokenError) {
         await requestNewToken()
         continue
       }
-
-      // For no results, return the response so UI can show message
-      if(code === 1) return res.data
-
-      throw new Error('OpenTDB error code ' + code)
+      if(result.noResults) return res.data
     }catch(err){
       lastErr = err
-      const status = err?.response?.status
-      // retry on 429 (rate limit) with backoff
-      if(status === 429){
-        const wait = 500 * attempts
-        await new Promise(r => setTimeout(r, wait))
-        continue
-      }
-
-      // network/timeouts — try a couple times
-      if(attempts < 3){
-        await new Promise(r => setTimeout(r, 200 * attempts))
-        continue
-      }
-
+      const shouldRetry = await handleRetryError(err, attempts)
+      if(shouldRetry) continue
       throw err
     }
   }
