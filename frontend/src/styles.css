@@ -43,6 +43,9 @@ body{background:linear-gradient(180deg,#071032 0%, #071022 60%);color:#e6eef8;fo
 
 .question{padding:12px;border-radius:8px;border:1px solid rgba(255,255,255,0.03);background:linear-gradient(180deg, rgba(255,255,255,0.01), transparent)}
 
+.app-footer{text-align:center;padding:18px;margin-top:28px;border-top:1px solid rgba(255,255,255,0.03);color:var(--muted);font-size:14px}
+.app-footer strong{color:#e6eef8}
+
 @media (max-width:720px){
 	.hero{flex-direction:column;align-items:flex-start}
 }

@@ -27,6 +27,10 @@ export default function App() {
             <Route path="/trivia" element={<TriviaPage />} />
           </Routes>
         </main>
+
+        <footer className="app-footer">
+          <p>Desenvolvido por <strong>DIOGO DIAS</strong></p>
+        </footer>
       </div>
     </BrowserRouter>
   )
