@@ -17,6 +17,7 @@ RUN npm run build
 FROM nginx:stable-alpine
 RUN apk update && apk upgrade && apk add --no-cache zlib libpng
 COPY --from=build /app/dist /usr/share/nginx/html
+COPY frontend/nginx.conf /etc/nginx/conf.d/default.conf
 
-EXPOSE 80
+EXPOSE 4776
 CMD ["nginx", "-g", "daemon off;"]
